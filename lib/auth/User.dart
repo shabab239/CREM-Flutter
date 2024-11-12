@@ -77,6 +77,7 @@ Role _parseRole(String role) {
 
 enum Role {
   ADMIN,
+  MANAGER,
   EMPLOYEE,
   CUSTOMER,
   OWNER,

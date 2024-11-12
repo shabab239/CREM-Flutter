@@ -1,8 +1,6 @@
 import 'package:crem_flutter/util/ApiResponse.dart';
 import 'package:flutter/material.dart';
-
 import 'auth/AuthService.dart';
-import 'layout/BaseContainer.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -10,57 +8,115 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
-  final TextEditingController usernameTec = TextEditingController()
-    ..text = 'shabab';
-  final TextEditingController passwordTec = TextEditingController()
-    ..text = 'password';
+  final TextEditingController usernameTec = TextEditingController()..text = 'shabab';
+  final TextEditingController passwordTec = TextEditingController()..text = 'password';
 
   bool isLoading = false;
 
   @override
-  void initState() async {
+  void initState() {
+    _checkLoggedIn();
+    super.initState();
+  }
+
+  Future<void> _checkLoggedIn() async {
     if (await AuthService.isLoggedIn()) {
       Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
     }
-    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BaseContainer(
-      title: 'Login',
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: usernameTec,
-              decoration: InputDecoration(
-                labelText: 'Username',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.person),
-              ),
+    return Scaffold(
+      body: Stack(
+        children: [
+          // Background Image
+          /*Positioned.fill(
+            child: Image.asset(
+              'assets/images/construction_bg.jpg', // Add a construction-related image here
+              fit: BoxFit.cover,
             ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: passwordTec,
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: 'Password',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.lock),
-              ),
+          ),*/
+          // Dark Overlay for readability
+          Positioned.fill(
+            child: Container(
+              color: Colors.black.withOpacity(0.5),
             ),
-            const SizedBox(height: 20),
-            isLoading
-                ? CircularProgressIndicator()
-                : ElevatedButton(
-                    onPressed: _login,
-                    child: const Text('Login'),
+          ),
+          // Login Form
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32.0),
+              child: Card(
+                elevation: 10,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Center(
+                        child: Text(
+                          'Welcome!',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blueAccent,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 40),
+                      TextField(
+                        controller: usernameTec,
+                        decoration: InputDecoration(
+                          labelText: 'Username',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.person),
+                          filled: true,
+                          fillColor: Colors.white,
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      TextField(
+                        controller: passwordTec,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          labelText: 'Password',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.lock),
+                          filled: true,
+                          fillColor: Colors.white,
+                        ),
+                      ),
+                      SizedBox(height: 24),
+                      // Login Button
+                      isLoading
+                          ? Center(child: CircularProgressIndicator())
+                          : ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 5,
+                        ),
+                        onPressed: _login,
+                        child: Text(
+                          'Login',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-          ],
-        ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -80,14 +136,12 @@ class _LoginPageState extends State<LoginPage> {
         Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
       } else {
         setState(() {
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Invalid username or password')));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Invalid username or password')));
         });
       }
     } catch (e) {
       setState(() {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('An error occurred during login')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('An error occurred during login')));
       });
     } finally {
       setState(() {

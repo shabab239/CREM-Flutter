@@ -1,5 +1,5 @@
 class APIUrls {
-  static const String baseURL = 'http://localhost/api';
+  static const String baseURL = 'http://10.0.2.2/api';
 
   static Uri get login => Uri.parse('$baseURL/auth/login');
   static Uri get company => Uri.parse('$baseURL/company');
