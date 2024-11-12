@@ -74,8 +74,7 @@ class _LoginPageState extends State<LoginPage> {
     final password = passwordTec.text;
 
     try {
-      final ApiResponse apiResponse =
-          await AuthService.login(username, password);
+      final ApiResponse apiResponse = await AuthService.login(username, password);
       if (apiResponse.successful) {
         AuthService.initSession(apiResponse);
         Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
