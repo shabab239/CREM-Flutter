@@ -1,20 +1,20 @@
 class APIUrls {
   static const String baseURL = 'http://10.0.2.2/api';
 
-  static Uri get login => Uri.parse('$baseURL/auth/login');
-  static Uri get company => Uri.parse('$baseURL/company');
-  static Uri get user => Uri.parse('$baseURL/user');
+  static const String login = '$baseURL/auth/login';
+  static const String company = '$baseURL/company';
+  static const String user = '$baseURL/user';
 
-  static Uri get dashboard => Uri.parse('$baseURL/admin/dashboard');
-  static Uri get project => Uri.parse('$baseURL/project');
-  static Uri get stage => Uri.parse('$baseURL/stage');
-  static Uri get worker => Uri.parse('$baseURL/worker');
-  static Uri get task => Uri.parse('$baseURL/task');
-  static Uri get rawMaterial => Uri.parse('$baseURL/rawMaterial');
-  static Uri get supplier => Uri.parse('$baseURL/supplier');
-  static Uri get booking => Uri.parse('$baseURL/booking');
-  static Uri get payment => Uri.parse('$baseURL/payment');
-  static Uri get account => Uri.parse('$baseURL/account');
-  static Uri get transaction => Uri.parse('$baseURL/transaction');
-  static Uri get ledger => Uri.parse('$baseURL/ledger');
+  static const String dashboard = '$baseURL/admin/dashboard';
+  static const String project = '$baseURL/project';
+  static const String stage = '$baseURL/stage';
+  static const String worker = '$baseURL/worker';
+  static const String task = '$baseURL/task';
+  static const String rawMaterial = '$baseURL/rawMaterial';
+  static const String supplier = '$baseURL/supplier';
+  static const String booking = '$baseURL/booking';
+  static const String payment = '$baseURL/payment';
+  static const String account = '$baseURL/account';
+  static const String transaction = '$baseURL/transaction';
+  static const String ledger = '$baseURL/ledger';
 }

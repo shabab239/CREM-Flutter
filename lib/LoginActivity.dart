@@ -2,12 +2,12 @@ import 'package:crem_flutter/util/ApiResponse.dart';
 import 'package:flutter/material.dart';
 import 'auth/AuthService.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginActivity extends StatefulWidget {
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _LoginActivityState createState() => _LoginActivityState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginActivityState extends State<LoginActivity> {
   final TextEditingController usernameTec = TextEditingController()..text = 'shabab';
   final TextEditingController passwordTec = TextEditingController()..text = 'password';
 

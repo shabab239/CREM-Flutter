@@ -13,7 +13,7 @@ class AuthService {
 
   static Future<ApiResponse> login(String username, String password) async {
       final response = await http.post(
-        APIUrls.login,
+        Uri.parse(APIUrls.login),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'username': username, 'password': password}),
       );

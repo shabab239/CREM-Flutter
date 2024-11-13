@@ -1,160 +1,155 @@
-/*
 import 'dart:convert';
-import 'package:http/http.dart' as http;
-
-import '../../util/api_response.dart';
-import '../../util/urls.dart';
-import './project.model.dart';
-import './building/building.model.dart';
-import './floor/floor.model.dart';
-import './unit/unit.model.dart';
+import 'package:dio/dio.dart';
+import 'package:crem_flutter/util/APIUrls.dart';
+import '../auth/AuthInterceptor.dart';
+import '../util/ApiResponse.dart';
+import 'model/Building.dart';
+import 'model/Floor.dart';
+import 'model/Project.dart';
+import 'model/Unit.dart';
 
 class ProjectService {
-  final String apiUrl = API_URLS.project;
+  final Dio _dio;
 
-  // Helper method for handling API response
-  Future<ApiResponse> _handleResponse(http.Response response) async {
-    if (response.statusCode == 200) {
-      return ApiResponse.fromJson(jsonDecode(response.body));
-    } else {
-      throw Exception('Failed to fetch data: ${response.reasonPhrase}');
-    }
+  ProjectService() : _dio = Dio() {
+    _dio.interceptors.add(AuthInterceptor());
   }
+
+  final String apiUrl = APIUrls.project;
 
   // Project APIs
   Future<ApiResponse> getAllProjects() async {
-    final response = await http.get(Uri.parse('$apiUrl/'));
-    return _handleResponse(response);
+    final response = await _dio.get('$apiUrl/');
+    return ApiResponse.fromJson(response.data);
   }
 
   Future<ApiResponse> saveProject(Project project) async {
-    final response = await http.post(
-      Uri.parse('$apiUrl/save'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(project.toJson()),
+    final response = await _dio.post(
+      '$apiUrl/save',
+      data: jsonEncode(project.toJson()),
+      options: Options(headers: {'Content-Type': 'application/json'}),
     );
-    return _handleResponse(response);
+    return ApiResponse.fromJson(response.data);
   }
 
   Future<ApiResponse> updateProject(Project project) async {
-    final response = await http.put(
-      Uri.parse('$apiUrl/update'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(project.toJson()),
+    final response = await _dio.put(
+      '$apiUrl/update',
+      data: jsonEncode(project.toJson()),
+      options: Options(headers: {'Content-Type': 'application/json'}),
     );
-    return _handleResponse(response);
+    return ApiResponse.fromJson(response.data);
   }
 
   Future<ApiResponse> getProjectById(int id) async {
-    final response = await http.get(Uri.parse('$apiUrl/$id'));
-    return _handleResponse(response);
+    final response = await _dio.get('$apiUrl/$id');
+    return ApiResponse.fromJson(response.data);
   }
 
   Future<ApiResponse> deleteProjectById(int id) async {
-    final response = await http.delete(Uri.parse('$apiUrl/$id'));
-    return _handleResponse(response);
+    final response = await _dio.delete('$apiUrl/$id');
+    return ApiResponse.fromJson(response.data);
   }
 
   // Building APIs
   Future<ApiResponse> getAllBuildings() async {
-    final response = await http.get(Uri.parse('$apiUrl/buildings'));
-    return _handleResponse(response);
+    final response = await _dio.get('$apiUrl/buildings');
+    return ApiResponse.fromJson(response.data);
   }
 
   Future<ApiResponse> saveBuilding(Building building) async {
-    final response = await http.post(
-      Uri.parse('$apiUrl/building/save'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(building.toJson()),
+    final response = await _dio.post(
+      '$apiUrl/building/save',
+      data: jsonEncode(building.toJson()),
+      options: Options(headers: {'Content-Type': 'application/json'}),
     );
-    return _handleResponse(response);
+    return ApiResponse.fromJson(response.data);
   }
 
   Future<ApiResponse> updateBuilding(Building building) async {
-    final response = await http.put(
-      Uri.parse('$apiUrl/building/update'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(building.toJson()),
+    final response = await _dio.put(
+      '$apiUrl/building/update',
+      data: jsonEncode(building.toJson()),
+      options: Options(headers: {'Content-Type': 'application/json'}),
     );
-    return _handleResponse(response);
+    return ApiResponse.fromJson(response.data);
   }
 
   Future<ApiResponse> getBuildingById(int id) async {
-    final response = await http.get(Uri.parse('$apiUrl/building/$id'));
-    return _handleResponse(response);
+    final response = await _dio.get('$apiUrl/building/$id');
+    return ApiResponse.fromJson(response.data);
   }
 
   Future<ApiResponse> deleteBuildingById(int id) async {
-    final response = await http.delete(Uri.parse('$apiUrl/building/$id'));
-    return _handleResponse(response);
+    final response = await _dio.delete('$apiUrl/building/$id');
+    return ApiResponse.fromJson(response.data);
   }
 
   // Floor APIs
   Future<ApiResponse> getAllFloors() async {
-    final response = await http.get(Uri.parse('$apiUrl/floors'));
-    return _handleResponse(response);
+    final response = await _dio.get('$apiUrl/floors');
+    return ApiResponse.fromJson(response.data);
   }
 
   Future<ApiResponse> saveFloor(Floor floor) async {
-    final response = await http.post(
-      Uri.parse('$apiUrl/floor/save'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(floor.toJson()),
+    final response = await _dio.post(
+      '$apiUrl/floor/save',
+      data: jsonEncode(floor.toJson()),
+      options: Options(headers: {'Content-Type': 'application/json'}),
     );
-    return _handleResponse(response);
+    return ApiResponse.fromJson(response.data);
   }
 
   Future<ApiResponse> updateFloor(Floor floor) async {
-    final response = await http.put(
-      Uri.parse('$apiUrl/floor/update'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(floor.toJson()),
+    final response = await _dio.put(
+      '$apiUrl/floor/update',
+      data: jsonEncode(floor.toJson()),
+      options: Options(headers: {'Content-Type': 'application/json'}),
     );
-    return _handleResponse(response);
+    return ApiResponse.fromJson(response.data);
   }
 
   Future<ApiResponse> getFloorById(int id) async {
-    final response = await http.get(Uri.parse('$apiUrl/floor/$id'));
-    return _handleResponse(response);
+    final response = await _dio.get('$apiUrl/floor/$id');
+    return ApiResponse.fromJson(response.data);
   }
 
   Future<ApiResponse> deleteFloorById(int id) async {
-    final response = await http.delete(Uri.parse('$apiUrl/floor/$id'));
-    return _handleResponse(response);
+    final response = await _dio.delete('$apiUrl/floor/$id');
+    return ApiResponse.fromJson(response.data);
   }
 
   // Unit APIs
   Future<ApiResponse> getAllUnits() async {
-    final response = await http.get(Uri.parse('$apiUrl/units'));
-    return _handleResponse(response);
+    final response = await _dio.get('$apiUrl/units');
+    return ApiResponse.fromJson(response.data);
   }
 
   Future<ApiResponse> saveUnit(Unit unit) async {
-    final response = await http.post(
-      Uri.parse('$apiUrl/unit/save'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(unit.toJson()),
+    final response = await _dio.post(
+      '$apiUrl/unit/save',
+      data: jsonEncode(unit.toJson()),
+      options: Options(headers: {'Content-Type': 'application/json'}),
     );
-    return _handleResponse(response);
+    return ApiResponse.fromJson(response.data);
   }
 
   Future<ApiResponse> updateUnit(Unit unit) async {
-    final response = await http.put(
-      Uri.parse('$apiUrl/unit/update'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(unit.toJson()),
+    final response = await _dio.put(
+      '$apiUrl/unit/update',
+      data: jsonEncode(unit.toJson()),
+      options: Options(headers: {'Content-Type': 'application/json'}),
     );
-    return _handleResponse(response);
+    return ApiResponse.fromJson(response.data);
   }
 
   Future<ApiResponse> getUnitById(int id) async {
-    final response = await http.get(Uri.parse('$apiUrl/unit/$id'));
-    return _handleResponse(response);
+    final response = await _dio.get('$apiUrl/unit/$id');
+    return ApiResponse.fromJson(response.data);
   }
 
   Future<ApiResponse> deleteUnitById(int id) async {
-    final response = await http.delete(Uri.parse('$apiUrl/unit/$id'));
-    return _handleResponse(response);
+    final response = await _dio.delete('$apiUrl/unit/$id');
+    return ApiResponse.fromJson(response.data);
   }
 }
-*/
