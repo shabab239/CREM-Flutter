@@ -1,5 +1,5 @@
 
-import '../../auth/User.dart';
+import '../../user/User.dart';
 import 'Booking.dart';
 
 class BookingPayment {

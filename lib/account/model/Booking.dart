@@ -1,5 +1,5 @@
 
-import '../../auth/User.dart';
+import '../../user/User.dart';
 import '../../project/model/Unit.dart';
 import 'BookingPayment.dart';
 

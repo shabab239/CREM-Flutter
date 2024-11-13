@@ -1,7 +1,7 @@
 import 'package:crem_flutter/auth/AuthService.dart';
 import 'package:flutter/material.dart';
 
-import '../auth/User.dart';
+import '../user/User.dart';
 
 class MainLayout extends StatelessWidget {
   final Widget child;

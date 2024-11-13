@@ -1,4 +1,4 @@
-import 'Company.dart';
+import '../auth/Company.dart';
 
 class User {
   int? id;

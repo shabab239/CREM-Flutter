@@ -1,7 +1,7 @@
 
 
 import '../../auth/Company.dart';
-import '../../auth/User.dart';
+import '../../user/User.dart';
 import '../../raw-material/model/Supplier.dart';
 import '../../worker/model/Worker.dart';
 import 'Transaction.dart';

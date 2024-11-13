@@ -1,3 +1,4 @@
+import 'package:crem_flutter/project/ProjectForm.dart';
 import 'package:flutter/material.dart';
 
 import '../util/AlertUtil.dart';
@@ -11,6 +12,7 @@ class ProjectList extends StatefulWidget {
 }
 
 class _ProjectListState extends State<ProjectList> {
+  final _projectService = ProjectService();
   List<Project> projects = [];
 
   @override
@@ -21,7 +23,7 @@ class _ProjectListState extends State<ProjectList> {
 
   void loadProjects() async {
     try {
-      ApiResponse response = await ProjectService().getAllProjects();
+      ApiResponse response = await _projectService.getAllProjects();
       if (response.successful) {
         setState(() {
           projects = List<Project>.from(response.data['projects'].map((x) => Project.fromJson(x)));
@@ -40,7 +42,7 @@ class _ProjectListState extends State<ProjectList> {
       return;
     }
     try {
-      ApiResponse response = await ProjectService().deleteProjectById(id);
+      ApiResponse response = await _projectService.deleteProjectById(id);
       if (response.successful) {
         loadProjects();
         AlertUtil.success(context, response);
@@ -84,22 +86,22 @@ class _ProjectListState extends State<ProjectList> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           IconButton(
-                            icon: Icon(Icons.visibility),
+                            icon: Icon(Icons.visibility), color: Colors.blue,
                             onPressed: () {
                               // Navigate to project details page
                             },
                           ),
                           IconButton(
-                            icon: Icon(Icons.edit),
+                            icon: Icon(Icons.edit), color: Colors.orange,
                             onPressed: () {
-                              Navigator.pushNamed(
+                              Navigator.push(
                                 context,
-                                '/project-form/${project.id}',
+                                MaterialPageRoute(builder: (context) => ProjectForm(projectId: project.id)),
                               );
                             },
                           ),
                           IconButton(
-                            icon: Icon(Icons.delete),
+                            icon: Icon(Icons.delete), color: Colors.red,
                             onPressed: () {
                               deleteProject(project.id);
                             },

@@ -1,9 +1,10 @@
 import 'package:crem_flutter/project/ProjectForm.dart';
 import 'package:crem_flutter/project/ProjectList.dart';
+import 'package:crem_flutter/user/UserList.dart';
 import 'package:flutter/material.dart';
 
 import 'auth/AuthService.dart';
-import 'auth/User.dart';
+import 'user/User.dart';
 import 'layout/MainLayout.dart'; // Import the MainLayout
 
 class HomeActivity extends StatefulWidget {
@@ -100,6 +101,24 @@ class _HomeActivityState extends State<HomeActivity> {
                             _buildButton(
                                 icon: Icons.add_box,
                                 label: "Add Unit",
+                                onTap: () {}),
+                          ],
+                        ),
+                        _buildSection(
+                          title: "Users",
+                          items: [
+                            _buildButton(
+                                icon: Icons.supervised_user_circle,
+                                label: "Users",
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => UserList()),
+                                  );
+                                }),
+                            _buildButton(
+                                icon: Icons.add_box,
+                                label: "Add User",
                                 onTap: () {}),
                           ],
                         ),

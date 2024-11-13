@@ -1,6 +1,6 @@
 
 
-import 'auth/User.dart';
+import 'user/User.dart';
 
 class Task {
   final int? id;

@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../util/ApiResponse.dart';
-import 'User.dart';
+import '../user/User.dart';
 
 class AuthService {
   static const String _jwtKey = 'jwt';
@@ -23,6 +23,9 @@ class AuthService {
   static Future<void> initSession(ApiResponse apiResponse) async {
     final jwt = apiResponse.data['jwt'];
     final user = apiResponse.data['user'];
+
+    String role = apiResponse.data['user']['role'];
+    user['role'] = role.split('_')[1];
 
     final sp = await SharedPreferences.getInstance();
     await sp.setString(_jwtKey, jwt);

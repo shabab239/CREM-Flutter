@@ -1,5 +1,6 @@
 class APIUrls {
-  static const String baseURL = 'http://10.0.2.2/api';
+  //static const String baseURL = 'http://10.0.2.2/api';
+  static const String baseURL = 'http://localhost/api';
 
   static const String login = '$baseURL/auth/login';
   static const String company = '$baseURL/company';

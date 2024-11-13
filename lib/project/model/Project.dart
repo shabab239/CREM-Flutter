@@ -1,4 +1,4 @@
-import '../../auth/User.dart';
+import '../../user/User.dart';
 import 'Building.dart';
 
 class Project {
