@@ -1,28 +1,26 @@
 
 
 class Worker {
-  final int? id;
-  final String name;
-  final double salary;
-  final String? cell;
-  final String? gender;
-  final String? address;
-  final String? avatar;
-  final DateTime? joiningDate;
-  final String? bloodGroup;
-  final int companyId;
+  int? id;
+  String? name;
+  double? salary;
+  String? cell;
+  String? gender;
+  String? address;
+  String? avatar;
+  DateTime? joiningDate;
+  String? bloodGroup;
 
   Worker({
     this.id,
-    required this.name,
-    required this.salary,
+    this.name,
+    this.salary,
     this.cell,
     this.gender,
     this.address,
     this.avatar,
     this.joiningDate,
     this.bloodGroup,
-    required this.companyId,
   });
 
   factory Worker.fromJson(Map<String, dynamic> json) {
@@ -38,7 +36,6 @@ class Worker {
           ? DateTime.parse(json['joiningDate'])
           : null,
       bloodGroup: json['bloodGroup'],
-      companyId: json['companyId'],
     );
   }
 
@@ -53,7 +50,6 @@ class Worker {
       'avatar': avatar,
       'joiningDate': joiningDate?.toIso8601String(),
       'bloodGroup': bloodGroup,
-      'companyId': companyId,
     };
   }
 }

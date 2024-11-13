@@ -8,7 +8,8 @@ class LoginActivity extends StatefulWidget {
 }
 
 class _LoginActivityState extends State<LoginActivity> {
-  final TextEditingController usernameTec = TextEditingController()..text = 'shabab';
+  //final TextEditingController usernameTec = TextEditingController()..text = 'shabab';
+  final TextEditingController usernameTec = TextEditingController()..text = 'employeeA';
   final TextEditingController passwordTec = TextEditingController()..text = 'password';
 
   bool isLoading = false;
