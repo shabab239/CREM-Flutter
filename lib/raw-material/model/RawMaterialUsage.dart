@@ -1,5 +1,5 @@
 
-import '../../project/model/ConstructionStage.dart';
+import '../../stage/model/ConstructionStage.dart';
 import 'RawMaterial.dart';
 
 class RawMaterialUsage {

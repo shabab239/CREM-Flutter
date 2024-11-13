@@ -1,39 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:panara_dialogs/panara_dialogs.dart';
 
 import 'ApiResponse.dart';
 
 class AlertUtil {
   static void success(BuildContext context, ApiResponse response) {
-    PanaraInfoDialog.show(
-      context,
-      title: "Success",
-      message: response?.message ?? 'Successful',
-      buttonText: 'OK',
-      onTapDismiss: () {
-        Navigator.pop(context);
-      },
-      panaraDialogType: PanaraDialogType.success,
-      barrierDismissible: false,
+    final snackBar = SnackBar(
+      content: Text(response.message ?? 'Successful'),
+      backgroundColor: Colors.green,
+      behavior: SnackBarBehavior.floating,
+      duration: Duration(seconds: 2),
     );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   static void error(BuildContext context, ApiResponse response) {
-    String errorMessage = 'An error occurred';
-
-    errorMessage = response.message ?? errorMessage;
-
-    PanaraInfoDialog.show(
-      context,
-      title: "Error",
-      message: errorMessage,
-      buttonText: 'OK',
-      onTapDismiss: () {
-        Navigator.pop(context);
-      },
-      panaraDialogType: PanaraDialogType.error,
-      barrierDismissible: false,
+    final snackBar = SnackBar(
+      content: Text(response.message ?? 'An error occurred'),
+      backgroundColor: Colors.red,
+      behavior: SnackBarBehavior.floating,
+      duration: Duration(seconds: 3),
     );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   static void exception(BuildContext context, dynamic error) {
@@ -47,16 +34,12 @@ class AlertUtil {
       errorMessage = error['message'] ?? errorMessage;
     }
 
-    PanaraInfoDialog.show(
-      context,
-      title: "Error",
-      message: errorMessage,
-      buttonText: 'OK',
-      onTapDismiss: () {
-        Navigator.pop(context);
-      },
-      panaraDialogType: PanaraDialogType.error,
-      barrierDismissible: false,
+    final snackBar = SnackBar(
+      content: Text(errorMessage),
+      backgroundColor: Colors.orange,
+      behavior: SnackBarBehavior.floating,
+      duration: Duration(seconds: 3),
     );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

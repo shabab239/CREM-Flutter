@@ -1,33 +1,33 @@
-import 'package:crem_flutter/project/ProjectForm.dart';
+import 'package:crem_flutter/project/ProjectService.dart';
 import 'package:flutter/material.dart';
 
 import '../util/AlertUtil.dart';
 import '../util/ApiResponse.dart';
-import 'ProjectService.dart';
-import 'model/Project.dart';
+import 'FloorForm.dart';
+import 'model/Floor.dart';
 
-class ProjectList extends StatefulWidget {
+class FloorList extends StatefulWidget {
   @override
-  _ProjectListState createState() => _ProjectListState();
+  _FloorListState createState() => _FloorListState();
 }
 
-class _ProjectListState extends State<ProjectList> {
+class _FloorListState extends State<FloorList> {
   final _projectService = ProjectService();
-  List<Project> projects = [];
+  List<Floor> floors = [];
 
   @override
   void initState() {
     super.initState();
-    loadProjects();
+    loadFloors();
   }
 
-  void loadProjects() async {
+  void loadFloors() async {
     try {
-      ApiResponse response = await _projectService.getAllProjects();
+      ApiResponse response = await _projectService.getAllFloors();
       if (response.successful) {
         setState(() {
-          projects = List<Project>.from(
-              response.data['projects'].map((x) => Project.fromJson(x)));
+          floors = List<Floor>.from(
+              response.data['floors'].map((x) => Floor.fromJson(x)));
         });
       } else {
         AlertUtil.error(context, response);
@@ -37,15 +37,15 @@ class _ProjectListState extends State<ProjectList> {
     }
   }
 
-  void deleteProject(int? id) async {
+  void deleteFloor(int? id) async {
     if (id == null) {
       AlertUtil.exception(context, "ID not found");
       return;
     }
     try {
-      ApiResponse response = await _projectService.deleteProjectById(id);
+      ApiResponse response = await _projectService.deleteFloorById(id);
       if (response.successful) {
-        loadProjects();
+        loadFloors();
         AlertUtil.success(context, response);
       } else {
         AlertUtil.error(context, response);
@@ -59,13 +59,13 @@ class _ProjectListState extends State<ProjectList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Projects List"),
+        title: Text("Floors List"),
         actions: [
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ProjectForm()));
+                  MaterialPageRoute(builder: (context) => FloorForm()));
             },
           ),
         ],
@@ -76,15 +76,16 @@ class _ProjectListState extends State<ProjectList> {
           children: [
             Expanded(
               child: ListView.builder(
-                itemCount: projects.length,
+                itemCount: floors.length,
                 itemBuilder: (context, index) {
-                  Project project = projects[index];
+                  Floor floor = floors[index];
                   return Card(
                     margin: EdgeInsets.symmetric(vertical: 8.0),
                     child: ListTile(
-                      title: Text(project.name ?? 'Project'),
-                      subtitle: Text(
-                          '${project.location} | Budget: \$${project.budget}'),
+                      title: Text(
+                          floor.name?.toString().split('.').last ?? 'Floor'),
+                      subtitle:
+                          Text('Building: ${floor.building?.name ?? "N/A"}'),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -92,7 +93,7 @@ class _ProjectListState extends State<ProjectList> {
                             icon: Icon(Icons.visibility),
                             color: Colors.blue,
                             onPressed: () {
-                              // Navigate to project details page
+                              // Navigate to floor details page (optional)
                             },
                           ),
                           IconButton(
@@ -103,7 +104,7 @@ class _ProjectListState extends State<ProjectList> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        ProjectForm(projectId: project.id)),
+                                        FloorForm(floorId: floor.id)),
                               );
                             },
                           ),
@@ -111,7 +112,7 @@ class _ProjectListState extends State<ProjectList> {
                             icon: Icon(Icons.delete),
                             color: Colors.red,
                             onPressed: () {
-                              deleteProject(project.id);
+                              deleteFloor(floor.id);
                             },
                           ),
                         ],

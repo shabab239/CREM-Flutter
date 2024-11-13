@@ -1,5 +1,11 @@
+import 'package:crem_flutter/building/BuildingForm.dart';
+import 'package:crem_flutter/building/BuildingList.dart';
+import 'package:crem_flutter/floor/FloorForm.dart';
+import 'package:crem_flutter/floor/FloorList.dart';
 import 'package:crem_flutter/project/ProjectForm.dart';
 import 'package:crem_flutter/project/ProjectList.dart';
+import 'package:crem_flutter/unit/UnitForm.dart';
+import 'package:crem_flutter/unit/UnitList.dart';
 import 'package:crem_flutter/user/UserList.dart';
 import 'package:flutter/material.dart';
 
@@ -71,11 +77,21 @@ class _HomeActivityState extends State<HomeActivity> {
                             _buildButton(
                                 icon: Icons.apartment,
                                 label: "Buildings",
-                                onTap: () {}),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => BuildingList()),
+                                  );
+                                }),
                             _buildButton(
                                 icon: Icons.add_box,
                                 label: "Add Building",
-                                onTap: () {}),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => BuildingForm()),
+                                  );
+                                }),
                           ],
                         ),
                         _buildSection(
@@ -84,11 +100,21 @@ class _HomeActivityState extends State<HomeActivity> {
                             _buildButton(
                                 icon: Icons.layers,
                                 label: "Floors",
-                                onTap: () {}),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => FloorList()),
+                                  );
+                                }),
                             _buildButton(
                                 icon: Icons.add_box,
                                 label: "Add Floor",
-                                onTap: () {}),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => FloorForm()),
+                                  );
+                                }),
                           ],
                         ),
                         _buildSection(
@@ -97,11 +123,21 @@ class _HomeActivityState extends State<HomeActivity> {
                             _buildButton(
                                 icon: Icons.home_work,
                                 label: "Units",
-                                onTap: () {}),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => UnitList()),
+                                  );
+                                }),
                             _buildButton(
                                 icon: Icons.add_box,
                                 label: "Add Unit",
-                                onTap: () {}),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => UnitForm()),
+                                  );
+                                }),
                           ],
                         ),
                         _buildSection(

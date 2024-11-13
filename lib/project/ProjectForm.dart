@@ -11,7 +11,6 @@ import '../util/ApiResponse.dart';
 import 'model/Project.dart';
 
 class ProjectForm extends StatefulWidget {
-
   var projectId;
 
   ProjectForm({super.key, this.projectId});
@@ -24,14 +23,21 @@ class _ProjectFormState extends State<ProjectForm> {
   Map<String, String> errors = {};
   Project project = Project();
   List<User> users = [];
+  List<User> selectedTeamMembers = [];
 
   final _projectService = ProjectService();
   final _userService = UserService();
 
+  final _nameController = TextEditingController();
+  final _locationController = TextEditingController();
+  final _startDateController = TextEditingController();
+  final _endDateController = TextEditingController();
+  final _budgetController = TextEditingController();
+  final _descriptionController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
-
     _loadUsers();
     if (widget.projectId != null) {
       _loadProject(widget.projectId);
@@ -61,7 +67,18 @@ class _ProjectFormState extends State<ProjectForm> {
         setState(() {
           dynamic project = response.data['project'];
           if (project != null) {
+            this.project = Project.fromJson(project);
 
+            _nameController.text = project['name'] ?? '';
+            _locationController.text = project['location'] ?? '';
+            _startDateController.text = project['startDate']?.toString().split(' ')[0] ?? '';
+            _endDateController.text = project['endDate']?.toString().split(' ')[0] ?? '';
+            _budgetController.text = project['budget']?.toString() ?? '';
+            _descriptionController.text = project['description'] ?? '';
+
+            selectedTeamMembers = (project['teamMembers'] as List)
+                .map((teamMember) => User.fromJson(teamMember))
+                .toList();
           }
         });
       } else {
@@ -74,7 +91,14 @@ class _ProjectFormState extends State<ProjectForm> {
 
   void _saveProject() async {
     try {
-      var response = await _projectService.saveProject(project);
+      project.teamMembers = selectedTeamMembers;
+
+      var response;
+      if (widget.projectId != null) {
+        response = await _projectService.updateProject(project);
+      } else {
+        response = await _projectService.saveProject(project);
+      }
       if (response.successful) {
         AlertUtil.success(context, response);
         Navigator.pop(context);
@@ -118,11 +142,10 @@ class _ProjectFormState extends State<ProjectForm> {
                   child: Column(
                     children: [
                       TextFormField(
-                        initialValue: project.name,
+                        controller: _nameController,
                         decoration: InputDecoration(
                           labelText: 'Project Name',
-                          errorText:
-                              errors['name'] == '' ? null : errors['name'],
+                          errorText: errors['name'] == '' ? null : errors['name'],
                         ),
                         onChanged: (value) {
                           setState(() {
@@ -133,12 +156,10 @@ class _ProjectFormState extends State<ProjectForm> {
                       ),
                       SizedBox(height: 12),
                       TextFormField(
-                        initialValue: project.location,
+                        controller: _locationController,
                         decoration: InputDecoration(
                           labelText: 'Project Location',
-                          errorText: errors['location'] == ''
-                              ? null
-                              : errors['location'],
+                          errorText: errors['location'] == '' ? null : errors['location'],
                         ),
                         onChanged: (value) {
                           setState(() {
@@ -152,8 +173,7 @@ class _ProjectFormState extends State<ProjectForm> {
                         value: project.status?.toString().split('.').last,
                         decoration: InputDecoration(
                           labelText: 'Project Status',
-                          errorText:
-                              errors['status'] == '' ? null : errors['status'],
+                          errorText: errors['status'] == '' ? null : errors['status'],
                         ),
                         items: ProjectStatus.values.map((status) {
                           return DropdownMenuItem<String>(
@@ -164,8 +184,8 @@ class _ProjectFormState extends State<ProjectForm> {
                         onChanged: (value) {
                           setState(() {
                             project.status = ProjectStatus.values.firstWhere(
-                                (status) =>
-                                    status.toString().split('.').last == value,
+                                    (status) =>
+                                status.toString().split('.').last == value,
                                 orElse: () => ProjectStatus.PLANNING);
                             errors['status'] = '';
                           });
@@ -189,17 +209,11 @@ class _ProjectFormState extends State<ProjectForm> {
                     children: [
                       SizedBox(height: 12),
                       TextFormField(
-                        controller: TextEditingController(
-                          text: project.startDate != null
-                              ? project.startDate.toString().split(' ')[0]
-                              : '',
-                        ),
+                        controller: _startDateController,
                         readOnly: true,
                         decoration: InputDecoration(
                           labelText: 'Start Date',
-                          errorText: errors['startDate'] == ''
-                              ? null
-                              : errors['startDate'],
+                          errorText: errors['startDate'] == '' ? null : errors['startDate'],
                           suffixIcon: Icon(Icons.calendar_today),
                         ),
                         onTap: () async {
@@ -212,6 +226,7 @@ class _ProjectFormState extends State<ProjectForm> {
                           if (pickedDate != null) {
                             setState(() {
                               project.startDate = pickedDate;
+                              _startDateController.text = pickedDate.toString().split(' ')[0];
                               errors['startDate'] = '';
                             });
                           }
@@ -219,17 +234,11 @@ class _ProjectFormState extends State<ProjectForm> {
                       ),
                       SizedBox(height: 12),
                       TextFormField(
-                        controller: TextEditingController(
-                          text: project.endDate != null
-                              ? project.endDate.toString().split(' ')[0]
-                              : '',
-                        ),
+                        controller: _endDateController,
                         readOnly: true,
                         decoration: InputDecoration(
                           labelText: 'End Date',
-                          errorText: errors['endDate'] == ''
-                              ? null
-                              : errors['endDate'],
+                          errorText: errors['endDate'] == '' ? null : errors['endDate'],
                           suffixIcon: Icon(Icons.calendar_today),
                         ),
                         onTap: () async {
@@ -242,6 +251,7 @@ class _ProjectFormState extends State<ProjectForm> {
                           if (pickedDate != null) {
                             setState(() {
                               project.endDate = pickedDate;
+                              _endDateController.text = pickedDate.toString().split(' ')[0];
                               errors['endDate'] = '';
                             });
                           }
@@ -249,14 +259,12 @@ class _ProjectFormState extends State<ProjectForm> {
                       ),
                       SizedBox(height: 12),
                       TextFormField(
-                        initialValue: project.budget?.toString() ?? '',
+                        controller: _budgetController,
                         decoration: InputDecoration(
                           labelText: 'Budget',
-                          errorText:
-                              errors['budget'] == '' ? null : errors['budget'],
+                          errorText: errors['budget'] == '' ? null : errors['budget'],
                         ),
-                        keyboardType:
-                            TextInputType.numberWithOptions(decimal: true),
+                        keyboardType: TextInputType.numberWithOptions(decimal: true),
                         onChanged: (value) {
                           setState(() {
                             if (value.isNotEmpty) {
@@ -272,55 +280,45 @@ class _ProjectFormState extends State<ProjectForm> {
                       DropdownButtonFormField<int>(
                         value: project.manager?.id,
                         decoration: InputDecoration(
-                          labelText: 'Project Manager',
-                          errorText: errors['manager'] == ''
-                              ? null
-                              : errors['manager'],
+                          labelText: 'Manager',
+                          errorText: errors['manager'] == '' ? null : errors['manager'],
                         ),
                         items: users.map((user) {
                           return DropdownMenuItem<int>(
                             value: user.id,
-                            child: Text(user.name ?? 'User'),
+                            child: Text(user.name ?? ''),
                           );
                         }).toList(),
                         onChanged: (value) {
                           setState(() {
-                            project.manager?.id = value!;
+                            project.manager = users.firstWhere(
+                                    (user) => user.id == value,
+                                orElse: () => User());
                             errors['manager'] = '';
                           });
                         },
                       ),
-                      SizedBox(height: 12),
-                      MultiSelectDialogField<User>(
-                        items: users
-                            .map((user) => MultiSelectItem<User>(
-                                user, user.name ?? 'User'))
-                            .toList(),
-                        title: Text('Select Team Members'),
-                        buttonText: Text('Team Members'),
-                        selectedItemsTextStyle: TextStyle(color: Colors.blue),
-                        initialValue: project.teamMembers ?? [],
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: errors['teamMembers'] == null
-                                ? Colors.grey
-                                : Colors.red,
-                          ),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
+                      SizedBox(height: 16),
+                      MultiSelectDialogField(
+                        items: users.map((user) => MultiSelectItem<User>(user, user.name!)).toList(),
+                        initialValue: selectedTeamMembers,
+                        title: Text("Select"),
+                        buttonText: Text("Select Team Members"),
+                        selectedColor: Colors.blue,
+                        decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
                         onConfirm: (values) {
                           setState(() {
-                            project.teamMembers = List<User>.from(values);
-                            errors['teamMembers'] = '';
+                            selectedTeamMembers = values;
                           });
                         },
-                      ),
+                      )
+
                     ],
                   ),
                 ),
               ),
               Text(
-                'Additional Information',
+                'Description',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 8),
@@ -329,30 +327,30 @@ class _ProjectFormState extends State<ProjectForm> {
                 margin: EdgeInsets.only(bottom: 16),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: TextFormField(
-                    initialValue: project.description,
-                    maxLines: 4,
-                    decoration: InputDecoration(
-                      labelText: 'Project Description',
-                      errorText: errors['description'] == ''
-                          ? null
-                          : errors['description'],
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                        project.description = value;
-                        errors['description'] = '';
-                      });
-                    },
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        controller: _descriptionController,
+                        maxLines: 5,
+                        decoration: InputDecoration(
+                          labelText: 'Description',
+                          errorText: errors['description'] == '' ? null : errors['description'],
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            project.description = value;
+                            errors['description'] = '';
+                          });
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ),
-              Center(
-                child: ElevatedButton(
-                  onPressed: _saveProject,
-                  child: Text(
-                      project.id != null ? 'Update Project' : 'Create Project'),
-                ),
+              SizedBox(height: 8),
+              ElevatedButton(
+                onPressed: _saveProject,
+                child: Text('Save'),
               ),
             ],
           ),

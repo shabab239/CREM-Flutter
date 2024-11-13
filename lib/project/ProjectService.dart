@@ -3,10 +3,10 @@ import 'package:dio/dio.dart';
 import 'package:crem_flutter/util/APIUrls.dart';
 import '../auth/AuthInterceptor.dart';
 import '../util/ApiResponse.dart';
-import 'model/Building.dart';
-import 'model/Floor.dart';
+import '../building/model/Building.dart';
+import '../floor/model/Floor.dart';
 import 'model/Project.dart';
-import 'model/Unit.dart';
+import '../unit/model/Unit.dart';
 
 class ProjectService {
   final Dio _dio;
@@ -139,6 +139,23 @@ class ProjectService {
       '$apiUrl/unit/update',
       data: jsonEncode(unit.toJson()),
       options: Options(headers: {'Content-Type': 'application/json'}),
+    );
+    return ApiResponse.fromJson(response.data);
+  }
+
+  Future<ApiResponse> updateUnitImage(MultipartFile image, int unitId) async {
+    final formData = FormData.fromMap({
+      'image': image,
+      'unitId': unitId,
+    });
+    final response = await _dio.put(
+      '$apiUrl/unit/updateImage',
+      data: formData,
+      options: Options(
+        headers: {
+          'Content-Type': 'multipart/form-data', // Set correct content type for multipart data
+        },
+      ),
     );
     return ApiResponse.fromJson(response.data);
   }

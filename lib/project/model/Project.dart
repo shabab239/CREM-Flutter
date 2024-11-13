@@ -1,18 +1,18 @@
+import '../../building/model/Building.dart';
 import '../../user/User.dart';
-import 'Building.dart';
 
 class Project {
-   int? id;
+  int? id;
   String? name;
-   String? location;
-   DateTime? startDate;
-   DateTime? endDate;
-   double? budget;
-   String? description;
-   ProjectStatus? status;
-   User? manager;
-   List<User>? teamMembers;
-   List<Building>? buildings;
+  String? location;
+  DateTime? startDate;
+  DateTime? endDate;
+  double? budget;
+  String? description;
+  ProjectStatus? status;
+  User? manager = User();
+  List<User>? teamMembers;
+  List<Building>? buildings;
 
   Project({
     this.id,

@@ -1,15 +1,15 @@
 
-import 'Floor.dart';
+import '../../floor/model/Floor.dart';
 
 class Unit {
-  final int? id;
-  final String name;
-  final int? size;
-  final double? price;
-  final UnitType? type;
-  final UnitStatus? status;
-  final Floor floor;
-  final int companyId;
+  int? id;
+  String name;
+  int? size;
+  double? price;
+  UnitType? type;
+  UnitStatus? status;
+  Floor? floor;
+  String? image;
 
   Unit({
     this.id,
@@ -18,8 +18,8 @@ class Unit {
     this.price,
     this.type,
     this.status,
-    required this.floor,
-    required this.companyId,
+    this.floor,
+    this.image,
   });
 
   factory Unit.fromJson(Map<String, dynamic> json) {
@@ -37,7 +37,7 @@ class Unit {
           .firstWhere((e) => e.toString() == 'UnitStatus.${json['status']}')
           : null,
       floor: Floor.fromJson(json['floor']),
-      companyId: json['companyId'],
+      image: json['image'],
     );
   }
 
@@ -49,8 +49,8 @@ class Unit {
       'price': price,
       'type': type?.toString().split('.').last,
       'status': status?.toString().split('.').last,
-      'floor': floor.toJson(),
-      'companyId': companyId,
+      'floor': floor?.toJson(),
+      'image': image,
     };
   }
 }

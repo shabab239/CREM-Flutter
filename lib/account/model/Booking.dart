@@ -1,6 +1,6 @@
 
 import '../../user/User.dart';
-import '../../project/model/Unit.dart';
+import '../../unit/model/Unit.dart';
 import 'BookingPayment.dart';
 
 class Booking {

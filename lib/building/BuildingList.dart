@@ -1,33 +1,33 @@
-import 'package:crem_flutter/project/ProjectForm.dart';
+import 'package:crem_flutter/project/ProjectService.dart';
 import 'package:flutter/material.dart';
 
 import '../util/AlertUtil.dart';
 import '../util/ApiResponse.dart';
-import 'ProjectService.dart';
-import 'model/Project.dart';
+import 'BuildingForm.dart';
+import 'model/Building.dart';
 
-class ProjectList extends StatefulWidget {
+class BuildingList extends StatefulWidget {
   @override
-  _ProjectListState createState() => _ProjectListState();
+  _BuildingListState createState() => _BuildingListState();
 }
 
-class _ProjectListState extends State<ProjectList> {
+class _BuildingListState extends State<BuildingList> {
   final _projectService = ProjectService();
-  List<Project> projects = [];
+  List<Building> buildings = [];
 
   @override
   void initState() {
     super.initState();
-    loadProjects();
+    loadBuildings();
   }
 
-  void loadProjects() async {
+  void loadBuildings() async {
     try {
-      ApiResponse response = await _projectService.getAllProjects();
+      ApiResponse response = await _projectService.getAllBuildings();
       if (response.successful) {
         setState(() {
-          projects = List<Project>.from(
-              response.data['projects'].map((x) => Project.fromJson(x)));
+          buildings = List<Building>.from(
+              response.data['buildings'].map((x) => Building.fromJson(x)));
         });
       } else {
         AlertUtil.error(context, response);
@@ -37,15 +37,15 @@ class _ProjectListState extends State<ProjectList> {
     }
   }
 
-  void deleteProject(int? id) async {
+  void deleteBuilding(int? id) async {
     if (id == null) {
       AlertUtil.exception(context, "ID not found");
       return;
     }
     try {
-      ApiResponse response = await _projectService.deleteProjectById(id);
+      ApiResponse response = await _projectService.deleteBuildingById(id);
       if (response.successful) {
-        loadProjects();
+        loadBuildings();
         AlertUtil.success(context, response);
       } else {
         AlertUtil.error(context, response);
@@ -59,13 +59,13 @@ class _ProjectListState extends State<ProjectList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Projects List"),
+        title: Text("Buildings List"),
         actions: [
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ProjectForm()));
+                  MaterialPageRoute(builder: (context) => BuildingForm()));
             },
           ),
         ],
@@ -76,15 +76,15 @@ class _ProjectListState extends State<ProjectList> {
           children: [
             Expanded(
               child: ListView.builder(
-                itemCount: projects.length,
+                itemCount: buildings.length,
                 itemBuilder: (context, index) {
-                  Project project = projects[index];
+                  Building building = buildings[index];
                   return Card(
                     margin: EdgeInsets.symmetric(vertical: 8.0),
                     child: ListTile(
-                      title: Text(project.name ?? 'Project'),
+                      title: Text(building.name ?? 'Building'),
                       subtitle: Text(
-                          '${project.location} | Budget: \$${project.budget}'),
+                          '${building.type?.toString().split('.').last ?? "Unknown"} | Project: ${building.project?.name ?? "N/A"}'),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -92,7 +92,7 @@ class _ProjectListState extends State<ProjectList> {
                             icon: Icon(Icons.visibility),
                             color: Colors.blue,
                             onPressed: () {
-                              // Navigate to project details page
+                              // Navigate to building details page
                             },
                           ),
                           IconButton(
@@ -103,7 +103,7 @@ class _ProjectListState extends State<ProjectList> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        ProjectForm(projectId: project.id)),
+                                        BuildingForm(buildingId: building.id)),
                               );
                             },
                           ),
@@ -111,7 +111,7 @@ class _ProjectListState extends State<ProjectList> {
                             icon: Icon(Icons.delete),
                             color: Colors.red,
                             onPressed: () {
-                              deleteProject(project.id);
+                              deleteBuilding(building.id);
                             },
                           ),
                         ],

@@ -1,22 +1,20 @@
 
-import 'Floor.dart';
-import 'Project.dart';
+import '../../floor/model/Floor.dart';
+import '../../project/model/Project.dart';
 
 class Building {
-  final int? id;
-  final String? name;
-  final BuildingType? type;
-  final Project project;
-  final List<Floor>? floors;
-  final int companyId;
+  int? id;
+  String? name;
+  BuildingType? type;
+  Project? project;
+  List<Floor>? floors;
 
   Building({
     this.id,
     this.name,
     this.type,
-    required this.project,
+    this.project,
     this.floors,
-    required this.companyId,
   });
 
   factory Building.fromJson(Map<String, dynamic> json) {
@@ -27,13 +25,12 @@ class Building {
           ? BuildingType.values
           .firstWhere((e) => e.toString() == 'BuildingType.${json['type']}')
           : null,
-      project: Project.fromJson(json['project']),
+      project: json['project'] == null ? null : Project.fromJson(json['project']),
       floors: json['floors'] != null
           ? (json['floors'] as List)
           .map((e) => Floor.fromJson(e))
           .toList()
           : [],
-      companyId: json['companyId'],
     );
   }
 
@@ -42,9 +39,8 @@ class Building {
       'id': id,
       'name': name,
       'type': type?.toString().split('.').last,
-      'project': project.toJson(),
+      'project': project?.toJson(),
       'floors': floors?.map((e) => e.toJson()).toList(),
-      'companyId': companyId,
     };
   }
 }

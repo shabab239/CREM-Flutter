@@ -2,9 +2,9 @@
 
 import '../../raw-material/model/RawMaterial.dart';
 import '../../worker/model/Worker.dart';
-import 'Building.dart';
-import 'Floor.dart';
-import 'Unit.dart';
+import '../../building/model/Building.dart';
+import '../../floor/model/Floor.dart';
+import '../../unit/model/Unit.dart';
 
 class ConstructionStage {
   final int? id;

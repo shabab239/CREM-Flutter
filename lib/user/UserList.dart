@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../util/APIUrls.dart';
 import '../util/AlertUtil.dart';
 import '../util/ApiResponse.dart';
 import 'User.dart';
@@ -81,7 +82,7 @@ class _UserListState extends State<UserList> {
                     child: ListTile(
                       leading: user.avatar != null
                           ? CircleAvatar(
-                              backgroundImage: NetworkImage('http://localhost/image/avatar/${user.avatar!}'),
+                              backgroundImage: NetworkImage(APIUrls.avatar + user.avatar!),
                             )
                           : CircleAvatar(child: Icon(Icons.person)),
                       title: Text(user.name ?? 'User'),

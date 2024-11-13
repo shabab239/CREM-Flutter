@@ -1,20 +1,14 @@
-
-import 'Building.dart';
-import 'Unit.dart';
+import '../../building/model/Building.dart';
 
 class Floor {
-  final int? id;
-  final FloorName? name;
-  final Building building;
-  final List<Unit>? units;
-  final int companyId;
+  int? id;
+  FloorName? name;
+  Building? building;
 
   Floor({
     this.id,
     this.name,
-    required this.building,
-    this.units,
-    required this.companyId,
+    this.building,
   });
 
   factory Floor.fromJson(Map<String, dynamic> json) {
@@ -25,10 +19,6 @@ class Floor {
           .firstWhere((e) => e.toString() == 'FloorName.${json['name']}')
           : null,
       building: Building.fromJson(json['building']),
-      units: json['units'] != null
-          ? (json['units'] as List).map((e) => Unit.fromJson(e)).toList()
-          : [],
-      companyId: json['companyId'],
     );
   }
 
@@ -36,9 +26,7 @@ class Floor {
     return {
       'id': id,
       'name': name?.toString().split('.').last,
-      'building': building.toJson(),
-      'units': units?.map((e) => e.toJson()).toList(),
-      'companyId': companyId,
+      'building': building?.toJson(),
     };
   }
 }

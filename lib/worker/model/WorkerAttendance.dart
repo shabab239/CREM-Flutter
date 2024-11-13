@@ -1,6 +1,6 @@
 
 
-import '../../project/model/ConstructionStage.dart';
+import '../../stage/model/ConstructionStage.dart';
 import 'Worker.dart';
 
 class WorkerAttendance {
