@@ -3,24 +3,22 @@ import 'Account.dart';
 
 
 class Transaction {
-  final int? id;
-  final DateTime date;
-  final double amount;
-  final TransactionType type;
-  final String groupTransactionId;
-  final String particular;
-  final Account account;
-  final int companyId;
+  int? id;
+  DateTime? date;
+  double? amount;
+  TransactionType? type;
+  String? groupTransactionId;
+  String? particular;
+  Account? account;
 
   Transaction({
     this.id,
-    required this.date,
-    required this.amount,
-    required this.type,
-    required this.groupTransactionId,
-    required this.particular,
-    required this.account,
-    required this.companyId,
+    this.date,
+    this.amount,
+    this.type,
+    this.groupTransactionId,
+    this.particular,
+    this.account,
   });
 
   factory Transaction.fromJson(Map<String, dynamic> json) {
@@ -33,20 +31,18 @@ class Transaction {
       groupTransactionId: json['groupTransactionId'],
       particular: json['particular'],
       account: Account.fromJson(json['account']),
-      companyId: json['companyId'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'date': date.toIso8601String(),
+      'date': date?.toIso8601String(),
       'amount': amount,
       'type': type.toString().split('.').last,
       'groupTransactionId': groupTransactionId,
       'particular': particular,
-      'account': account.toJson(),
-      'companyId': companyId,
+      'account': account?.toJson(),
     };
   }
 }

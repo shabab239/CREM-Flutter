@@ -1,3 +1,5 @@
+import 'package:crem_flutter/account/AccountList.dart';
+import 'package:crem_flutter/account/TransactionList.dart';
 import 'package:crem_flutter/building/BuildingForm.dart';
 import 'package:crem_flutter/building/BuildingList.dart';
 import 'package:crem_flutter/floor/FloorForm.dart';
@@ -231,6 +233,31 @@ class _HomeActivityState extends State<HomeActivity> {
               label: "Add User",
               onTap: () {
                 // Add functionality for adding users when implemented
+              },
+            ),
+          ],
+        ),
+        _buildSection(
+          title: "Accounts",
+          items: [
+            _buildButton(
+              icon: Icons.account_balance,
+              label: "All A/C",
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AccountList()),
+                );
+              },
+            ),
+            _buildButton(
+              icon: Icons.money,
+              label: "Transactions",
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => TransactionList()),
+                );
               },
             ),
           ],
