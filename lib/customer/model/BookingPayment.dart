@@ -1,22 +1,20 @@
 
 import '../../user/User.dart';
-import 'Booking.dart';
+import '../../customer/model/Booking.dart';
 
 class BookingPayment {
-  final int? id;
-  final double amount;
-  final DateTime date;
-  final Booking booking;
-  final User customer;
-  final int companyId;
+  int? id;
+  double? amount;
+  DateTime? date;
+  Booking? booking;
+  User? customer;
 
   BookingPayment({
     this.id,
-    required this.amount,
-    required this.date,
-    required this.booking,
-    required this.customer,
-    required this.companyId,
+    this.amount,
+    this.date,
+    this.booking,
+    this.customer,
   });
 
   factory BookingPayment.fromJson(Map<String, dynamic> json) {
@@ -26,7 +24,6 @@ class BookingPayment {
       date: DateTime.parse(json['date']),
       booking: Booking.fromJson(json['booking']),
       customer: User.fromJson(json['customer']),
-      companyId: json['companyId'],
     );
   }
 
@@ -34,10 +31,9 @@ class BookingPayment {
     return {
       'id': id,
       'amount': amount,
-      'date': date.toIso8601String(),
-      'booking': booking.toJson(),
-      'customer': customer.toJson(),
-      'companyId': companyId,
+      'date': date?.toIso8601String(),
+      'booking': booking?.toJson(),
+      'customer': customer?.toJson(),
     };
   }
 }

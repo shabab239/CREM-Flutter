@@ -6,8 +6,10 @@ import 'package:crem_flutter/project/ProjectForm.dart';
 import 'package:crem_flutter/project/ProjectList.dart';
 import 'package:crem_flutter/task/TaskList.dart';
 import 'package:crem_flutter/task/model/Task.dart';
+import 'package:crem_flutter/customer/UnitBrowse.dart';
 import 'package:crem_flutter/unit/UnitForm.dart';
 import 'package:crem_flutter/unit/UnitList.dart';
+import 'package:crem_flutter/unit/model/Unit.dart';
 import 'package:crem_flutter/user/UserList.dart';
 import 'package:crem_flutter/worker/WorkerAttendanceActivity.dart';
 import 'package:crem_flutter/worker/WorkerAttendanceReport.dart';
@@ -354,15 +356,29 @@ class _HomeActivityState extends State<HomeActivity> {
     return Column(
       children: [
         _buildSection(
-          title: "Available Units",
+          title: "Units",
           items: [
             _buildButton(
               icon: Icons.home,
-              label: "View Units",
+              label: "Available",
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => UnitList()),
+                  MaterialPageRoute(
+                    builder: (context) => UnitBrowse(unitStatus: UnitStatus.AVAILABLE), // Pass the status here
+                  ),
+                );
+              },
+            ),
+            _buildButton(
+              icon: Icons.book,
+              label: "Booked",
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UnitBrowse(unitStatus: UnitStatus.RESERVED), // Pass the status here
+                  ),
                 );
               },
             ),
