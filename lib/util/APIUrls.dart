@@ -1,6 +1,7 @@
 class APIUrls {
-  static const String baseURL = 'http://10.0.2.2/api';
-  // static const String baseURL = 'http://localhost/api';
+  // static const String baseURL = 'http://10.0.2.2/api';
+  static const String baseURL = 'http://localhost/api';
+  // static const String baseURL = 'https://5158-103-35-168-89.ngrok-free.app/api';
 
   static const String login = '$baseURL/auth/login';
   static const String company = '$baseURL/company';

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:crem_flutter/account/AccountList.dart';
 import 'package:crem_flutter/account/TransactionList.dart';
 import 'package:crem_flutter/building/BuildingForm.dart';
@@ -19,7 +20,7 @@ import 'package:flutter/material.dart';
 
 import 'auth/AuthService.dart';
 import 'user/User.dart';
-import 'layout/MainLayout.dart'; // Import the MainLayout
+import 'layout/MainLayout.dart';
 
 class HomeActivity extends StatefulWidget {
   @override
@@ -28,6 +29,7 @@ class HomeActivity extends StatefulWidget {
 
 class _HomeActivityState extends State<HomeActivity> {
   User? user;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -47,420 +49,388 @@ class _HomeActivityState extends State<HomeActivity> {
   @override
   Widget build(BuildContext context) {
     return MainLayout(
-      title: 'Home',
+      title: 'Dashboard',
       child: user != null
-          ? Column(
+          ? SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _buildWelcomeCard(),
+            const SizedBox(height: 24),
+            if (user?.role == Role.ADMIN || user?.role == Role.MANAGER)
+              _buildAdminDashboard()
+            else if (user?.role == Role.EMPLOYEE)
+              _buildEmployeeDashboard()
+            else if (user?.role == Role.CUSTOMER)
+                _buildCustomerDashboard(),
+          ],
+        ),
+      )
+          : const Center(child: CircularProgressIndicator()),
+    );
+  }
+
+  Widget _buildWelcomeCard() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Stack(
         children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  _buildHeader(),
-                  if (user?.role == Role.ADMIN || user?.role == Role.MANAGER) ...[
-                    _buildAdminManagerSections(),
+          Container(
+            height: 180,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.blue.shade800, Colors.blue.shade600],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.blue.withOpacity(0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 30,
+                      backgroundColor: Colors.white.withOpacity(0.9),
+                      child: Text(
+                        user?.name?.substring(0, 1).toUpperCase() ?? 'U',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue.shade800,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Welcome back,",
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.9),
+                              fontSize: 16,
+                            ),
+                          ),
+                          Text(
+                            user?.name ?? 'User',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
-                  if (user?.role == Role.EMPLOYEE) ...[
-                    _buildEmployeeSections(),
-                  ],
-                  if (user?.role == Role.CUSTOMER) ...[
-                    _buildCustomerSections(),
-                  ],
-                ],
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    user?.role?.toString().split('.').last ?? 'Unknown Role',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            right: -20,
+            top: -20,
+            child: Container(
+              width: 150,
+              height: 150,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.1),
+                shape: BoxShape.circle,
               ),
             ),
           ),
         ],
-      )
-          : Center(child: CircularProgressIndicator()),
+      ),
     );
   }
 
-  Widget _buildHeader() {
-    return Card(
-      elevation: 4.0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0),
-      ),
-      child: Container(
-        padding: EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.blue, Colors.blueAccent],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+  Widget _buildMenuItem({
+    required String title,
+    required IconData icon,
+    required VoidCallback onTap,
+    Color? color,
+  }) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: color ?? Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon, size: 32, color: Colors.blue.shade800),
+                const SizedBox(height: 12),
+                Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.blue.shade900,
+                  ),
+                ),
+              ],
+            ),
           ),
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 20),
-            Text(
-              "Welcome, ${user?.name ?? 'Guest'}",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold),
-            ),
-            Text(
-              "${user?.role?.toString().split('.').last ?? 'Unknown Role'}",
-              style: TextStyle(color: Colors.white70, fontSize: 16),
-            ),
-          ],
         ),
       ),
     );
   }
 
-  Widget _buildAdminManagerSections() {
-    return Column(
-      children: [
-        _buildSection(
-          title: "Projects",
-          items: [
-            _buildButton(
-              icon: Icons.business,
-              label: "Projects",
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ProjectList()),
-                );
-              },
-            ),
-            _buildButton(
-              icon: Icons.add_box,
-              label: "Add Project",
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ProjectForm()),
-                );
-              },
-            ),
-          ],
+  Widget _buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
+      child: Text(
+        title,
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: Colors.blue.shade900,
         ),
-        _buildSection(
-          title: "Buildings",
-          items: [
-            _buildButton(
-              icon: Icons.apartment,
-              label: "Buildings",
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => BuildingList()),
-                );
-              },
-            ),
-            _buildButton(
-              icon: Icons.add_box,
-              label: "Add Building",
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => BuildingForm()),
-                );
-              },
-            ),
-          ],
-        ),
-        _buildSection(
-          title: "Floors",
-          items: [
-            _buildButton(
-              icon: Icons.layers,
-              label: "Floors",
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => FloorList()),
-                );
-              },
-            ),
-            _buildButton(
-              icon: Icons.add_box,
-              label: "Add Floor",
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => FloorForm()),
-                );
-              },
-            ),
-          ],
-        ),
-        _buildSection(
-          title: "Units",
-          items: [
-            _buildButton(
-              icon: Icons.home_work,
-              label: "Units",
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => UnitList()),
-                );
-              },
-            ),
-            _buildButton(
-              icon: Icons.add_box,
-              label: "Add Unit",
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => UnitForm()),
-                );
-              },
-            ),
-          ],
-        ),
-        _buildSection(
-          title: "Users",
-          items: [
-            _buildButton(
-              icon: Icons.supervised_user_circle,
-              label: "Users",
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => UserList()),
-                );
-              },
-            ),
-            _buildButton(
-              icon: Icons.add_box,
-              label: "Add User",
-              onTap: () {
-                // Add functionality for adding users when implemented
-              },
-            ),
-          ],
-        ),
-        _buildSection(
-          title: "Accounts",
-          items: [
-            _buildButton(
-              icon: Icons.account_balance,
-              label: "All A/C",
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => AccountList()),
-                );
-              },
-            ),
-            _buildButton(
-              icon: Icons.money,
-              label: "Transactions",
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => TransactionList()),
-                );
-              },
-            ),
-          ],
-        ),
-      ],
+      ),
     );
   }
 
-
-  Widget _buildEmployeeSections() {
-    return Column(
-      children: [
-        _buildSection(
-          title: "Tasks",
-          items: [
-            _buildButton(
-              icon: Icons.pending_actions,
-              label: "Pending",
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => TaskList(status: Status.PENDING)),
-                );
-              },
-            ),
-            _buildButton(
-              icon: Icons.pending_actions,
-              label: "In Progress",
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => TaskList(status: Status.IN_PROGRESS)),
-                );
-              },
-            ),
-            _buildButton(
-              icon: Icons.task_rounded,
-              label: "Completed",
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => TaskList(status: Status.COMPLETED)),
-                );
-              },
-            ),
-          ],
-        ),
-        _buildSection(
-          title: "Worker Attendance",
-          items: [
-            _buildButton(
-              icon: Icons.checklist,
-              label: "Take",
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => WorkerAttendanceActivity()),
-                );
-              },
-            ),
-            _buildButton(
-              icon: Icons.document_scanner_sharp,
-              label: "View",
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => WorkerAttendanceReport()),
-                );
-              },
-            ),
-          ],
-        ),
-        _buildSection(
-          title: "Buildings",
-          items: [
-            _buildButton(
-              icon: Icons.apartment,
-              label: "Buildings",
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => BuildingList()),
-                );
-              },
-            ),
-          ],
-        ),
-        _buildSection(
-          title: "Floors",
-          items: [
-            _buildButton(
-              icon: Icons.layers,
-              label: "Floors",
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => FloorList()),
-                );
-              },
-            ),
-          ],
-        ),
-        _buildSection(
-          title: "Units",
-          items: [
-            _buildButton(
-              icon: Icons.home_work,
-              label: "Units",
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => UnitList()),
-                );
-              },
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildCustomerSections() {
-    return Column(
-      children: [
-        _buildSection(
-          title: "Units",
-          items: [
-            _buildButton(
-              icon: Icons.home,
-              label: "Available",
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => UnitBrowse(unitStatus: UnitStatus.AVAILABLE), // Pass the status here
-                  ),
-                );
-              },
-            ),
-            _buildButton(
-              icon: Icons.book,
-              label: "Booked",
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => UnitBrowse(unitStatus: UnitStatus.RESERVED), // Pass the status here
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSection({required String title, required List<Widget> items}) {
+  Widget _buildAdminDashboard() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Text(
-            title,
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
+        _buildSectionTitle('Project Management'),
+        GridView.count(
+          crossAxisCount: 2,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          childAspectRatio: 1.3,
+          children: [
+            _buildMenuItem(
+              title: 'Projects',
+              icon: Icons.business,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ProjectList()),
+              ),
+            ),
+            _buildMenuItem(
+              title: 'Buildings',
+              icon: Icons.apartment,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => BuildingList()),
+              ),
+            ),
+            _buildMenuItem(
+              title: 'Floors',
+              icon: Icons.layers,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => FloorList()),
+              ),
+            ),
+            _buildMenuItem(
+              title: 'Units',
+              icon: Icons.home_work,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => UnitList()),
+              ),
+            ),
+          ],
         ),
-        Container(
-          height: 100,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            children: items,
-          ),
+        _buildSectionTitle('Administration'),
+        GridView.count(
+          crossAxisCount: 2,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          childAspectRatio: 1.3,
+          children: [
+            _buildMenuItem(
+              title: 'Users',
+              icon: Icons.people,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => UserList()),
+              ),
+            ),
+            _buildMenuItem(
+              title: 'Accounts',
+              icon: Icons.account_balance,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AccountList()),
+              ),
+            ),
+            _buildMenuItem(
+              title: 'Transactions',
+              icon: Icons.receipt_long,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => TransactionList()),
+              ),
+            ),
+          ],
         ),
       ],
     );
   }
 
-  Widget _buildButton({
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: GestureDetector(
-        onTap: onTap,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+  Widget _buildEmployeeDashboard() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildSectionTitle('Tasks'),
+        GridView.count(
+          crossAxisCount: 2,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          childAspectRatio: 1.3,
           children: [
-            CircleAvatar(
-              radius: 30,
-              backgroundColor: Colors.blueAccent,
-              child: Icon(icon, color: Colors.white, size: 24),
+            _buildMenuItem(
+              title: 'Pending Tasks',
+              icon: Icons.pending_actions,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TaskList(status: Status.PENDING),
+                ),
+              ),
             ),
-            const SizedBox(height: 8),
-            Text(label, style: TextStyle(fontSize: 14)),
+            _buildMenuItem(
+              title: 'In Progress',
+              icon: Icons.work,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TaskList(status: Status.IN_PROGRESS),
+                ),
+              ),
+            ),
+            _buildMenuItem(
+              title: 'Completed',
+              icon: Icons.task_alt,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TaskList(status: Status.COMPLETED),
+                ),
+              ),
+            ),
           ],
         ),
-      ),
+        _buildSectionTitle('Worker Management'),
+        GridView.count(
+          crossAxisCount: 2,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          childAspectRatio: 1.3,
+          children: [
+            _buildMenuItem(
+              title: 'Take Attendance',
+              icon: Icons.how_to_reg,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => WorkerAttendanceActivity(),
+                ),
+              ),
+            ),
+            _buildMenuItem(
+              title: 'View Report',
+              icon: Icons.assessment,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => WorkerAttendanceReport(),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCustomerDashboard() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildSectionTitle('Property Browse'),
+        GridView.count(
+          crossAxisCount: 2,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          childAspectRatio: 1.3,
+          children: [
+            _buildMenuItem(
+              title: 'Available Units',
+              icon: Icons.home,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      UnitBrowse(unitStatus: UnitStatus.AVAILABLE),
+                ),
+              ),
+            ),
+            _buildMenuItem(
+              title: 'My Bookings',
+              icon: Icons.bookmark,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      UnitBrowse(unitStatus: UnitStatus.RESERVED),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
-
